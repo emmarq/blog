@@ -8,3 +8,5 @@ During a trip, i took photos, and those photos exceeded the limits of Google of 
 
 For a while back i was pondering on the idea of selfhosting a solution, and along the way, i have been discovering some awesome technologies like nebula, syncthing, and more recently, immich and backup software like borg and restic. I also own a raspberry pi 4 with 8GB of RAM. 
 At this moment i was on vacation so i decided to put the work and build my own cloud with backup there. I have researched nextcloud, almost went with openmediavault, but i finally decided with the next architecture. 
+
+![Architecture diagram](images/self_hosted_arch.png)
