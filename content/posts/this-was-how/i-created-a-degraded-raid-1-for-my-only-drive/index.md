@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Created a Degraded Raid 1 for My Only Drive'
 date = 2024-01-16T18:26:23-05:00
-draft = true
+draft = false
 +++
 
 Disclaimer: the moment of this write up, as most of mines, were the first one i do the thing. so take this with a grain of salt and don't be surprised if i do some hacky dirty stuff. And if i do,  please point people to the right direction. thank you.

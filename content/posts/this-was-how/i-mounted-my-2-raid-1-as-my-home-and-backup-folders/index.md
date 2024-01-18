@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Mounted My 2 Raid 1 as My Home and Backup Folders'
 date = 2024-01-16T18:30:06-05:00
-draft = true
+draft = false
 +++
 
 I am assuming you have a basic knowledge of the shell, the command line and how mounting works on linux (at least as little as me). If not, i strongly suggest you to watch or read some about this topics.

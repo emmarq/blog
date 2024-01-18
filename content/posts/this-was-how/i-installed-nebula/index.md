@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Installed Nebula'
 date = 2024-01-16T18:40:13-05:00
-draft = true
+draft = false
 +++
 
 The final result is a mesh vpn where my devices can connect privately, p2p, through the internet as it was a lan.

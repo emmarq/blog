@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Installed IMMICH Server and App'
 date = 2024-01-16T18:50:59-05:00
-draft = true
+draft = false
 +++
 
 The final result is a replacement for, as immich said: App-Which-Must-Not-Be-Named. A cloud based photo gallery with user capabilities with syncronization by syncthing. 

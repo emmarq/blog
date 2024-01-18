@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Changed Borg to Restic'
 date = 2024-01-16T18:54:50-05:00
-draft = true
+draft = false
 +++
 
 After more carefull reading, i decided to ditch borg because what i intend to do was to copy the repo to the cloud, they suggest against. https://borgbackup.readthedocs.io/en/stable/faq.html#can-i-copy-or-synchronize-my-repo-to-another-location If i had a friend in my nebula network willing to give me space to store my backups, i would continue using borg, but i don't.

@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Set Up BORG'
 date = 2024-01-16T18:52:46-05:00
-draft = true
+draft = false
 +++
 
 Final result: A backup system with snapshot and deduplication in a dedicated partition for another partition

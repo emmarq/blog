@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Replaced Google Drive With a Self Hosted System'
 date = 2024-01-16T18:57:53-05:00
-draft = true
+draft = false
 +++
 
 During a trip, i took photos, and those photos exceeded the storage limits of Google. I am ok with paying for SaaS, but i dont like to pay for things i dont use. The pricing model of google is not that bad, but they use some hard limits to charge you, instead of what you actually use. I felt it like a waste of money. And the privacy issues with how they treat data historically was also a downer. 

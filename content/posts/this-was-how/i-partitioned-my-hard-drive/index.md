@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Partitioned My Hard Drive'
 date = 2024-01-16T18:20:37-05:00
-draft = true
+draft = false
 +++
 
 I am assuming you have a basic knowledge of what a shell, the command line and partitions are. If not, i strongly suggest you to watch or read some about this topics.

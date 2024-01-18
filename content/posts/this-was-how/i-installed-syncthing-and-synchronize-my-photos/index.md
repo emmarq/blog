@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Installed Syncthing and Synchronize My Photos'
 date = 2024-01-16T18:36:42-05:00
-draft = true
+draft = false
 +++
 
 I assumed TBD

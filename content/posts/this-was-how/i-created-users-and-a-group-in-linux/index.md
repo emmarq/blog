@@ -1,7 +1,7 @@
 +++
 title = 'This Was How I Created Users and a Group in Linux'
 date = 2024-01-16T18:33:10-05:00
-draft = true
+draft = false
 +++
 
 Final result
