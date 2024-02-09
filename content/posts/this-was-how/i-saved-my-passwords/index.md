@@ -30,4 +30,8 @@ Al momento de crear el conjunto de claves gpg, el programa le pedira algunos dat
 
 Sinceramemte este proceso no lo estoy haciendo al momento de escribir este post, lo hice hace años ya. Asi que no lo estoy repitiendo. Para mas información de este proceso puede revisar la guia https://www.gnupg.org/gph/en/manual/c14.html. Lo que si estoy haciendo es configurar un computador nuevo. Entonces aprovecho para documentar este proceso que no pasa mucho, pero es muy importante.
 
-Lo primero es tener instalado gpg.
+#### Exportar e importar el conjunto de claves de gpg en una nueva maquina
+
+Si no tienes el archivo con las claves de gpg, pero si tienes un computador con esas ya instaladas puedes exportarlas de nuevo. Eso lo dejare documentado en este articulo. Aunque el deber ser es tener ese archivo disponible en un lugar seguro, y hasta guardado en una caja de seguridad junto con el passphrase que usaste para crearlas para que en el caso de que haya una catastrofe donde TODO SE DAÑE, pueda existir la esperanza de un plan de recuperación. Ya iremos viendo que otras cosas guardar de la misma manera.
+
+Lo primero es tener instalado gpg en la nueva maquina. Lo puedes instalar como mas te convenga. apt, brew, .exe, .msi, compila, no te voy a decir como instalar algo. Yo lo instalo con nix o con apt depende de donde este. Al momento de esta escritura lo hice con nix pero para el proposito de este articulo ese detalle no te debe de interesar.
