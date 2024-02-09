@@ -20,6 +20,12 @@ En pocas palabras, es un administrador de contraseña encriptado con git. Con el
 
 Para el repositorio de git use bitbucket. Fue el proveedor de git que usaba en ese momento, y el unico que conocia con repositorios privados. Ahora esta github y gitlab y otros. Crear un repositorio nuevo es muy facil. Menos en bitbucket. :)
 
+Pero como verás mas adelante, este proceso ya lo hice. lo que hare ahora es clonar el repositorio en la carpeta ~/.password-store que es el lugar por defecto donde pass busca las contraseñas encriptadas.
+
+```
+git clone https://gitlab.com/(user-name)/password-store.git
+```
+
 ### GPG
 
 Para lo de las claves gpg si tuve que investigar un poco. Y cada vez que me muevo a un pc o celular nuevo tengo que recordar de nuevo. (Este post lo hago para mi del futuro). Este tema merece un post aparte y dedicado, pero temo que el tiempo que le quiero invertir no es tanto. Por eso queda asi.
@@ -34,4 +40,100 @@ Sinceramemte este proceso no lo estoy haciendo al momento de escribir este post,
 
 Si no tienes el archivo con las claves de gpg, pero si tienes un computador con esas ya instaladas puedes exportarlas de nuevo. Eso lo dejare documentado en este articulo. Aunque el deber ser es tener ese archivo disponible en un lugar seguro, y hasta guardado en una caja de seguridad junto con el passphrase que usaste para crearlas para que en el caso de que haya una catastrofe donde TODO SE DAÑE, pueda existir la esperanza de un plan de recuperación. Ya iremos viendo que otras cosas guardar de la misma manera.
 
+##### Exportar
+
+Otro momento de confesión. No me acuerdo como fue que exporté el conjunto claves gpg por primera vez. Lo que sí se es que las he restaurado varias veces en computadores y celulares con un solo archivo. Eso me lleva a pensar que lo hice con un archivo de backup. Es lo que tiene mas sentido en este momento. Al haberlo hecho presuntamente asi, se agrego en el backup toda la información necesaria para restaurar y usar el conjunto de clave como si nada.
+
+```
+gpg -o private.gpg --export-options backup --export-secret-keys (mi correo)
+```
+
+y para restaurarlo en otro lugar, lo habré transferire usando los medios más seguros posibles (obviamente no me lo pase a mi mismo por whatsapp...), y en su sitio, habré de haber ejecutado algo asi
+
+```
+gpg --import-options restore --import private.gpg
+```
+
+Es lo que tiene mas sentido ahora tratando de recordar.
+
+Pero esta vez lo hice diferente. Lo hice como vi ahora que volví a repasar esto del gpg. De esta otra manera exporte 2 archivos distintos en ascii, uno para la clave publica:
+
+```
+gpg --export -a (mi correo) > pub.key
+```
+
+lo que produce un archivo pub.key. Y otro para la clave privada
+
+```
+gpg --export-secret-key -a (mi correo) > prv.key
+```
+
+lo que produce un archivo prv.key.
+
+Estos archivo los transferi por scp al nuevo equipo.
+
+```
+scp prv.key pub.key emmanuel@192.168.0.91:/Users/emmanuel
+```
+
+(Para lograr eso en la mac, que fue este caso, hay que ir a configuracion y permitir sesiones remotas)
+
+Eso fue el trabajo de la exportación, ahora es el momento de la importación.
+
+#### Importación
+
 Lo primero es tener instalado gpg en la nueva maquina. Lo puedes instalar como mas te convenga. apt, brew, .exe, .msi, compila, no te voy a decir como instalar algo. Yo lo instalo con nix o con apt depende de donde este. Al momento de esta escritura lo hice con nix pero para el proposito de este articulo ese detalle no te debe de interesar.
+
+Con gpg en el sistema, y los archivos del paso de la exportación, importarlos es muy sencillo:
+
+```
+gpg --import pub.key
+gpg --import prv.key
+```
+
+Eso fue todo con gpg.
+
+https://itslinuxfoss.com/export-gpg-private-key-and-public-key-file/
+https://www.jwillikers.com/backup-and-restore-a-gpg-key
+
+### PASS
+
+Pass tambien lo instale con nix
+
+```
+nix profile install nixpkgs#pass
+```
+
+Con la carpeta restaurada en el ~/.password-store y el conjunto de clave importada en gpg, pass ya puede sin mas configuracion desencriptar las contraseñas y guardar nuevas. Usará la configuración del agente gpg para solicitar el passphrase de la clave gpg para desencriptar la contraseña.
+
+Para guardar uso
+
+```
+pass generate (nombre o sitio de internet)
+```
+
+```
+pass insert (nombre o sitio de internet)
+```
+
+Para desencriptar uso
+
+```
+pass (nombre que le puse)
+```
+
+dependiendo del agente, me pedira o no contraseña. Para mas información de los comandos, ahi esta la pagina de pass.
+
+## Conclusión
+
+Asi guardo las contraseñas, uso algun cliente de pass en el navegador o en el celular para no hacerlo por cli.
+
+### Información para referencia futura
+
+Los datos importantes para replicar este proceso son
+
+1. La contraseña del repositorio de git donde guardo las contraseñas encriptadas.
+2. El backup del conjunto de claves de gpg.
+3. El passphrase de la clave privada gpg.
+
+Con esos 3 datos es posible restaurar las contraseñas siguiendo las instrucciones de este articulo.

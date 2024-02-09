@@ -12,6 +12,14 @@ Entonces, como me acaba de llegar esta nueva mac, (y M1). Aprovechare para docum
 
 El nuevo equipo de computo es una mac modelo A2442, es pequeña, con un chip M1 y recien formateada. Lo primero que hice fue abrir safari para descargar firefox.
 
+Tambien abri la terminal para instalar las herramientas para desarrolladores de linea de comandos con
+
+```
+xcode-select --install
+```
+
+Eso abre un cuadro de dialogo para instalar las herramientas.
+
 #### NIX
 
 Luego de abrir firefox, busque [el instalador de nix de Determinate Systems](https://github.com/DeterminateSystems/nix-installer) porque es mas ergonomico de usar, a pesar de que hace practicamente lo mismo que el oficial, pero con mejor desinstalación. Como es un comando se ejecuta en la terminal.
