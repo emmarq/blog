@@ -12,7 +12,7 @@ Es como si crearas una sola llave, y mil candados que se abren con esa llave. No
 
 Asi que en un arranque de paranoia me decidi en guardar mis contraseñas en un gestor de contraseñas.
 
-Evaluando algunos me di cuenta que las contraseñas que guardaba podian ser leidas a simple vista. Eso no me pareció muy seguro. Hasta que leyendo en Hacker News alguien compartio a [Pass](https://www.passwordstore.org/).
+Evaluando algunos me di cuenta que las contraseñas que guardaba podian ser leidas a simple vista. Eso no me pareció muy seguro. Hasta que leyendo en Hacker News alguien compartió a [Pass](https://www.passwordstore.org/).
 
 En pocas palabras, es un administrador de contraseña encriptado con git. Con el detalle de que tienes que poner el repositorio de git, y el conjunto de claves gpg (Digo conjunto porque se siente extraño hablar en singular cuando son 2 partes, en otras partes hablan en singular, la clave o la llave gpg, pero aqui prefiero referirlo como conjunto).
 
