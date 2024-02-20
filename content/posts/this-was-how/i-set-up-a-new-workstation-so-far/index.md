@@ -53,7 +53,7 @@ Despues de instalar nix, lo uso para instalar la mayoria de paquetes que pueda c
 
 ### Restaurar contraseñas
 
-Lo primero que instalo es gpg y de manera persistente para usarlo desde cualquier lugar como primer ciudadano del sistema. Por persistente quiero decir fijo en el sistema de la mac para que, cuando algun programa quiera usarlo, no tenga problemas accediendo a el. Esto lo hare con la [nueva cli de nix](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix)
+(Este punto es bastante personal por la manera que manejo mis contraseñas. Probablemente puedes saltarlo por completo). Instale gpg y de manera persistente para usarlo desde cualquier lugar como primer ciudadano del sistema. Por persistente quiero decir fijo en el sistema de la mac para que, cuando algun programa quiera usarlo, no tenga problemas accediendo a el. Esto lo hare con la [nueva cli de nix](https://nixos.org/manual/nix/stable/command-ref/new-cli/nix)
 
 ```
 nix profile install nixpkgs#gnupg
@@ -61,9 +61,9 @@ nix profile install nixpkgs#gnupg
 
 Eso instalara gpg en el perfil por defecto de nix, lo cual es suficiente para mi. Todo lo que se instale en ese perfil estara disponible system-wide. Luego hago lo que escribi en [como guardo mis contraseñas]({{< ref "/posts/this-was-how/i-saved-my-passwords" >}})
 
-### Crear el ambiente de desarrollo
-
 Con el repositorio de contraseñas en su lugar en el nuevo computador, ya soy libre para acceder y usar de todos los servicios para trabajar. Entrar a  google, atlassian, etc... y github, donde esta lo que es de interes: el proyecto de react native.
+
+### Crear el ambiente de desarrollo
 
 Me he tomado la molestia de crear un proyecto de cero para este instructivo. Esta en https://github.com/emmarq/Peto.
 
@@ -80,7 +80,7 @@ export NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE=1
 export NIXPKGS_ALLOW_UNFREE=1
 ```
 
-Luego de clonarlo, navego al directorio e inicio la shell de nix ejecutando el siguiente comando
+Ahora si navego al directorio del repo e inicio la shell de nix ejecutando el siguiente comando
 
 ```
 nix-shell default.nix -A mac --impure
@@ -96,7 +96,9 @@ nix-shell default.nix -A linux --impure
 
 Me paso que fallo porque no existe el archivo Gemfile.lock. Tengo 2 maneras de solucionar este problema. 1. generar ese archivo que resulta luego de instalar las gemas de ruby, o 2. No necesitar ese archivo de alguna manera.
 
-Ampliare un poco la situación con ruby. Cocoapods, que es el administrador de dependencias del proyecto de iOS, esta en ruby y fastlane tambien esta en ruby. Fastlane sugiere fuertemente que no se use la versión por defecto de la mac, entonces hay que instalar ruby por aparte. Las instalaciones de ruby han sido siempre un poco complicadas. Es algo que no entiendo. No puedo decir si ha mejorado con el tiempo porque ya estoy acostumbrado a su dificultad. En este caso, la instalación la hice con nix tambien; y las gemas, que son como programas de ruby (fastlane, cocoapods), tambien estan definidas con nix usando bundix. Bundix toma el gemfile y genera un gemset.nix con las derivaciones para instalar las gemas en el store de nix. Eso es un proceso que no es necesario que se conozca, a menos que haya que actualizar. La segunda manera no fue fructifera, bundlerEnv continuaba solicitando el dichoso gemfile.lock asi que a generarlo se dijo. Para generarlo inicie una nix shell distinta con:
+Ampliare un poco la situación con ruby. Cocoapods, que es el administrador de dependencias del proyecto de iOS, esta en ruby y fastlane tambien esta en ruby. Fastlane sugiere fuertemente que no se use la versión por defecto de la mac, entonces hay que instalar ruby por aparte. Las instalaciones de ruby han sido siempre un poco complicadas. Es algo que no entiendo el porqué, comparandolo con otros lenguajes. No puedo decir si ha mejorado con el tiempo porque ya estoy acostumbrado a su dificultad. En este caso, la instalación la hice con nix tambien; y las gemas, que son como programas de ruby (fastlane, cocoapods), tambien estan definidas con nix usando bundix. Bundix toma el gemfile y genera un gemset.nix con las derivaciones para instalar las gemas en el store de nix. Eso es un proceso que no es necesario que se conozca, a menos que haya que actualizar.
+
+Despues de intentar ignorar el Gemfile.lock, bundlerEnv continuaba solicitando el dichoso archivo asi que a generarlo se dijo. Para generarlo inicie una nix shell distinta con:
 
 ```
 nix-shell -p bundix
@@ -112,7 +114,7 @@ exit
 
 Luego de estas divertidas aventuras con nix y ruby, reintento la ejecución del shell de nix original
 
-#### Continuacion del amibiente
+#### Continuacion del ambiente
 
 ```
 nix-shell default.nix -A mac --impure
@@ -120,7 +122,7 @@ nix-shell default.nix -A mac --impure
 
 Y voila! hizo algo bien que me dejo dentro de la shell de nix, pero todavia no canto victoria.
 
-###
+### Ejecución del proyecto en android
 
 Ejecutare nuestro flamante peto en un emulador de android. Primero instalo las dependencias del proyecto en si con rmn. rmn es un alias que creé. Se puede ver en etc/nix/shellHook.nix que junta la instalacion de los paquetes de node y los pods.
 
@@ -144,23 +146,82 @@ Modifico el archivo de configuracion para habilitar el teclado y cambiar el tama
 etc/scripts/configure_avd.sh android/avd/config.ini
 ```
 
-Arranco el emulador con
+Arranco el emulador con el comando que tambien agrega la opción -dns-server 8.8.8.8 porque tuve un extraño problema de conectividad
 
 ```
-nohup emulator -avd peto_emulator &
+nohup emulator -avd peto_emulator -dns-server 8.8.8.8 &
 ```
 
-El servidor de metro de react native
+A continuación, se inicia el servidor de metro de react native
 ```
 yarn start
 ```
 
 Presiono la tecla a para instalar el app para android en el emulador. (El dispositivo que reconozca adb, en este caso, el emulador).
 
-Y me ha vuelto a fallar. Esta vez porque no tengo instaladas build tools para android 34. es un error facil de corregir.
+Y... me ha vuelto a fallar. Esta vez porque no tengo instaladas build tools para android 34. Es un error facil de corregir, solo es agregar lo que haga falta. El archivo que necesita los cambios es etc/nix/android_derivation.nix. En el encontramos una lista de dependencias para el desarrollo android como emulator, platform-tools, un android system image etc. Esas dependencias estan indexadas y al dia en el repositorio de github tadfisher/android-nixpkgs. Los nombres siguen una convención por lo que no es dificil encontrar paquetes en el repo en https://github.com/tadfisher/android-nixpkgs/tree/main/channels/stable. El ritmo de trabajo que sigo es intentar la compilación en android y, si falla por la ausencia de alguna dependencia, la agrego en etc/nix/android_derivation.nix, salgo, vuelvo a entrar a la shell de nix, y reintento la compilación. En este caso en particular empiezo por agregar platform-android-34 y build-tools-34-0-0 y reintento la compilación.
 
-### Instalar los certificados y provisiones
+Success! La aplicación corre en el emulador, lista para empezar a ser desarrollada.
+![emulador](assets/image2.png)
 
-### Correr en simulador
+Para usar un android tangible solo es necesario conectarlo. Recomiendo hacerlo wireless para evitar problemas de drivers con el usb. De esta manera es tan sencillo como un adb pair 192.168.1.131 o un adb connect 192.168.1.131 (192.168.1.131 es la ip que tenía mi telefono en ese momento)
 
-### Correr en iPhone
+### Primera recapitulación
+
+Para recapitular, para tener un ambiente de desarrollo de react native basico para android con nix se hacen los siguientes pasos
+
+1. Instalar xcode https://apps.apple.com/co/app/xcode/id497799835?mt=12
+2. Aceptar la licencia
+```
+sudo xcodebuild -license
+```
+3. Instalar nix
+```
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+4. Definir estas variables de entorno
+```
+export NIXPKGS_ACCEPT_ANDROID_SDK_LICENSE=1
+export NIXPKGS_ALLOW_UNFREE=1
+```
+5. Clonar el repositorio https://github.com/emmarq/Peto
+Si se pretende usar otro repo, habría que hacer esto de mas
+a. Copiar la carpeta etc y el archivo default.nix en el otro repo
+b. Iniciar una shell con bundix
+```
+nix-shell -p bundix
+```
+Dentro de la shell, generar el archivo gemfile.lock y gemset.nix, y mover gemset.nix a etc/nix
+``` 
+bundix -l
+mv gemset.nix etc/nix/
+exit
+```
+6. Editar el archivo etc/nix/mac_environment.nix y colocar en la linea 5 la versión de xcode que esta instalada. Puede verse ejectutando xcodebuild -version
+```
+ version = "15.2"; # your xcode version
+```
+7. Iniciar la shell de nix (la primera vez es demorada, las otras veces algunos segundos)
+```
+nix-shell default.nix -A mac --impure
+``` 
+8. Instalar las dependencias de node y cocoapods
+```
+npm install && cd ios && pod install && cd ..
+```
+9. Crear un emulador
+```
+avdmanager create avd -n peto_emulator -k "system-images;android-33;google_apis;arm64-v8a" -p android/avd
+```
+10. Configurar el emulador creado
+```
+etc/scripts/configure_avd.sh android/avd/config.ini
+```
+11. Iniciar el emulador
+```
+nohup emulator -avd peto_emulator -dns-server 8.8.8.8 &
+```
+12. Iniciar metro y correr en android (presiona a)
+```
+npm start
+```
