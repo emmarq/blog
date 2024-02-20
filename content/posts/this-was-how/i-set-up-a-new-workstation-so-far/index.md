@@ -124,7 +124,7 @@ Y voila! hizo algo bien que me dejo dentro de la shell de nix, pero todavia no c
 
 ### Ejecución del proyecto en android
 
-Ejecutare nuestro flamante peto en un emulador de android. Primero instalo las dependencias del proyecto en si con rmn. rmn es un alias que creé. Se puede ver en etc/nix/shellHook.nix que junta la instalacion de los paquetes de node y los pods.
+Ejecutaré nuestro flamante peto en un emulador de android. Primero instalo las dependencias del proyecto en si con rmn. rmn es un alias que creé. Se puede ver en etc/nix/shellHook.nix que junta la instalacion de los paquetes de node y los pods.
 
 Luego creo un android virtual device (avd)
 
@@ -165,6 +165,31 @@ Success! La aplicación corre en el emulador, lista para empezar a ser desarroll
 ![emulador](assets/image2.png)
 
 Para usar un android tangible solo es necesario conectarlo. Recomiendo hacerlo wireless para evitar problemas de drivers con el usb. De esta manera es tan sencillo como un adb pair 192.168.1.131 o un adb connect 192.168.1.131 (192.168.1.131 es la ip que tenía mi telefono en ese momento)
+
+### Ejecución del proyecto en ios
+
+Ha llegado el momento de terminar este escrito con la parte de la ejecución en iOS. Ingenuamente presiono la tecla i en la terminal corriendo metro para correr en iOS y me salta un pocoton de errores. Leer errores ya es en si una habilidad, y se algo al respecto. En la causa del error se menciona el fallo de un comando que reintento por aparte de metro
+
+```
+xcodebuild -list -json
+```
+
+lo que me sugiere al final
+
+A required plugin failed to load. Please ensure system content is up-to-date — try running 'xcodebuild -runFirstLaunch'.
+
+Ejecuto ese comando por primera vez en la vida
+```
+$ xcodebuild -runFirstLaunch
+Install Started
+1%.........20.........40.........60.........80.Install Succeeded
+```
+
+Reintento ejecutar el proyecto en iOS de nuevo presionando la tecla i, y ahora pasa algo que esperaba:
+
+info No booted devices or simulators found. Launching first available simulator...
+
+Y no hay simuladores. Crear un simulador es posible desde xcode, pero vere si es posible desde terminal, asi como el emulador de android.
 
 ### Primera recapitulación
 
