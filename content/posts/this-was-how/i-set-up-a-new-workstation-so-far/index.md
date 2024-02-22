@@ -178,22 +178,67 @@ lo que me sugiere al final
 
 A required plugin failed to load. Please ensure system content is up-to-date — try running 'xcodebuild -runFirstLaunch'.
 
-Ejecuto ese comando por primera vez en la vida
+Ejecuto ese comando por primera vez en la vida, mas adelante descubro que haciendo esto se instalan mas utilidades como simctl
 ```
+$ #Run the first launch experience to install the required system components, including simctl.
 $ xcodebuild -runFirstLaunch
 Install Started
 1%.........20.........40.........60.........80.Install Succeeded
 ```
 
-Reintento ejecutar el proyecto en iOS de nuevo presionando la tecla i, y ahora pasa algo que esperaba:
+Reintento ejecutar el proyecto en iOS de nuevo presionando la tecla i, y ahora pasa algo que si esperaba:
 
 info No booted devices or simulators found. Launching first available simulator...
 
-Y no hay simuladores. Crear un simulador es posible desde xcode, pero vere si es posible desde terminal, asi como el emulador de android.
+No hay simuladores. Crear un simulador es posible desde xcode, y tambien desde la linea de comandos con la utilidad simctl. Revisar la lista de dispositivos disponibles se hace con
+```sh
+$ xcrun simctl list
+== Device Types ==
+.
+.
+.
+== Runtimes ==
+== Devices ==
+== Device Pairs ==
+```
+La listas que mas interesan son Runtimes y Devices. Runtimes muestra las versiones de iOS que estan disponibles para el desarrollo. Ahora no hay nada asi que hay que instalarlas. Eso es posible desde xcode, donde se puede escoger granularmente la version de iOS deseada. Desde la linea de comandos no encontré como escoger la versión en especial, pero si se puede instalar la ultima soportada por xcode asi
 
-### Primera recapitulación
+```sh
+$ xcodebuild -downloadPlatform iOS
+```
 
-Para recapitular, para tener un ambiente de desarrollo de react native basico para android con nix se hacen los siguientes pasos
+En mi caso se instaló iOS 17.2. Ejecutar de nuevo `xcrun simctl list` muestra que también estan disponibles unos simuladores en la lista `== Devices ==` con iPhones compatibles con iOS 17.2. Igual es posible crear un simulador nuevo cuidando que el dispositivo y la version de iOS sea compatible:
+
+```
+xcrun simctl create "iPhone15-peto" "iPhone 15" iOS17.2
+```
+
+Con estos ajustes, ya la compilación debería continuar al presionar la tecla i nuevamente. El error de la falta de simuladores desaparece pero sucede una nueva extraña situación, la ejecución parece que se cortara, o detuviera sin ningun mensaje, como se presenta en esta [issue](https://github.com/facebook/react-native/issues/39743).
+
+Ejecutando en la carpeta de ios el comando que usa react native si se muestra un error
+```sh
+$ xcodebuild -workspace Peto.xcworkspace -configuration Debug -scheme Peto -destination id=383A68F5-CE3C-467C-B9B5-2A411D873B22
+** BUILD FAILED **
+
+
+The following build commands failed:
+	PhaseScriptExecution [CP-User]\ Generate\ Specs /Users/emmanuel/Library/Developer/Xcode/DerivedData/Peto-epysleugtarekhdvwyeplvzdjttw/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/React-rncore.build/Script-46EB2E0001DA30.sh (in target 'React-rncore' from project 'Pods')
+(1 failure)
+```
+Por ultimo en la caza del bug, al ejecutar ese archivo ocurre lo siguiente
+```sh
+$ /Users/emmanuel/Library/Developer/Xcode/DerivedData/Peto-epysleugtarekhdvwyeplvzdjttw/Build/Intermediates.noindex/Pods.build/Debug-iphonesimulator/React-rncore.build/Script-46EB2E0001DA30.sh
+
+/bin/sh: /../scripts/xcode/with-environment.sh: No such file or directory
+```
+
+Esta parece ser la razón por la que el proyecto falla en correr en iOS. el archivo `/../scripts/xcode/with-environment.sh` no existe. Esa ubicación no se en que posición relativa esta. Inspeccionando veo que el archivo usa unas variables de entorno que no tengo configuradas, parece que se configuran con el comando de xcodebuild por lo que veo, pero no se como llegan ahi. ni como es la ruta completa de los archivos que intenta el Script-46EB2E0001DA30.sh. xcodebuild oculta los echo que le puse al archivo al editar el script del pod que lo genera. Y no se porque cuando abro el archivo ios/Peto.xcworkspace en xcode y ejecuto el proyecto si corre correctamente (Queria evitar abrir xcode :( ). Mientras que un proyecto privado, legacy (razón por la cual estoy haciendo este post) corre sin problemas, directamente de la consola (casi sin problemas, tuve que hacer este [patch](https://github.com/react-native-video/react-native-video/issues/3154) en el proyecto). No quiero creer que sea por que esta en una version mas antigua de react native (unos meses).
+
+And with this bombshell is time to end.
+
+### Recapitulación
+
+Para recapitular, para tener un ambiente de desarrollo de react native basico para android y ios con nix se hacen los siguientes pasos
 
 1. Instalar xcode https://apps.apple.com/co/app/xcode/id497799835?mt=12
 2. Aceptar la licencia
@@ -234,6 +279,8 @@ nix-shell default.nix -A mac --impure
 ```
 npm install && cd ios && pod install && cd ..
 ```
+
+#### Android specifics :)
 9. Crear un emulador
 ```
 avdmanager create avd -n peto_emulator -k "system-images;android-33;google_apis;arm64-v8a" -p android/avd
@@ -250,3 +297,25 @@ nohup emulator -avd peto_emulator -dns-server 8.8.8.8 &
 ```
 npm start
 ```
+#### iOS specifics :/
+13. Correr el comando de la primera ejecucion de xcode
+```
+ xcodebuild -runFirstLaunch
+```
+14. Instalar los componentes para iOS (runtimes, etc...)
+```
+xcodebuild -downloadPlatform iOS
+```
+15. Iniciar metro
+```
+npm start
+``` 
+16. Abrir el proyecto en xcode la primera vez y ejecutarlo :/
+```
+open ios/Peto.xcworkspace/
+```
+
+Ya con el app instalada en el simulador y el emulador, no es necesario volver a hacer estos pasos. Sencillamente se inicia el simulador o el emulador, se corre en servidor de metro con `npm start`, se abre el app en el aparato virtualizado y se desarrolla el proyecto. En ese sentido no es necesario abrir de nuevo xcode :). A menos que haya un cambio a nivel nativo, es decir, en el codigo de android o ios por la instalación de una dependencia que necesite linking, cosa que se instala automatica pero necesita reinstalación. en ese caso si hace falta seguir el paso 12 para android y el 16 para ios.
+
+https://suelan.github.io/2020/02/05/iOS-Simulator-from-the-Command-Line/
+https://developer.apple.com/documentation/xcode/installing-additional-simulator-runtimes#Install-and-manage-Simulator-runtimes-from-the-command-line
