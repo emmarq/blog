@@ -118,7 +118,7 @@ Luego de estas divertidas aventuras con nix y ruby, reintento la ejecución del 
 
 ```
 nix-shell default.nix -A mac --impure
-``` 
+```
 
 Y voila! hizo algo bien que me dejo dentro de la shell de nix, pero todavia no canto victoria.
 
