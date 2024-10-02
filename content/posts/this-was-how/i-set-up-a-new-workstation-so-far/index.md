@@ -84,7 +84,7 @@ Ahora si navego al directorio del repo e inicio la shell de nix ejecutando el si
 
 ```
 nix-shell default.nix -A mac --impure
-``` 
+```
 
 Para el caso de un computador con linux, el comando es:
 
